@@ -1,21 +1,10 @@
-import React, { Component } from "react";
-import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from "reactstrap";
-
-class DishDetail extends Component{
-    constructor(props) {
-        super(props);
-
-        
-        
-       
-        this.state = {
-            selectedDishDetail: this.props.dsdetail
-        };
+import React from "react";
+import { Router } from "react-router-dom";
+import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem  } from "reactstrap";
+import { Link } from 'react-router-dom';
 
 
-    }
-
-    renderDish(dish) {
+    function RenderDish({dish}) {
 
         if (dish != null) {
             return (
@@ -37,7 +26,7 @@ class DishDetail extends Component{
         }
     }
 
-    renderComments(comments){
+    function RenderComments({comments}){
         if (comments == null) {
             return (<div></div>)
         }
@@ -47,7 +36,10 @@ class DishDetail extends Component{
                     <p>{comment.comment}</p>
                     <p>-- {comment.author},
                     &nbsp;
-                    {comment.date}
+                    {new Intl.DateTimeFormat('en-US', 
+                    { year: 'numeric', 
+                    month: 'short', 
+                    day: '2-digit'}).format(new Date(Date.parse(comment.date)))}
                     </p>
                 </li>
             )
@@ -64,8 +56,8 @@ class DishDetail extends Component{
     }
 
 
-    render(){
-        const dish = this.props.dish
+    function DishDetail (props){
+        const dish = props.dish
 
         
         
@@ -73,17 +65,36 @@ class DishDetail extends Component{
             return (<div></div>);
         }
 
-        const dishItem = this.renderDish(dish);
-        const dishComment = this.renderComments(dish.comments);
 
         return (
-            <div className='row'>
-                {dishItem}
-                {dishComment}
+            <div className='container'>
+
+                <div className="row">
+
+                        <Breadcrumb>
+                            <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                            <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                        </Breadcrumb>
+
+                    <div className="col-12">
+
+                        <h3>Menu</h3>
+
+                        <hr />
+
+                    </div>                
+                </div>
+
+                <div className='row'>
+
+                        <RenderDish dish = {props.dish} />
+                        <RenderComments comments = {props.comments} />
+
+                </div>
             </div>
         )
     }
 
-}
+
 
 export default DishDetail;
